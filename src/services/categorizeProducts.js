@@ -33,6 +33,8 @@ function categorizeProducts(products) {
     });
   });
 
+  categories.forEach((category) => delete category.categoryKey);
+
   return categories;
 }
 
