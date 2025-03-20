@@ -1,22 +1,33 @@
-const { extractAttributes } = require("../utils/extractAttributes");
+const { normalizeText } = require("../utils/normalize");
+const { similarity } = require("../utils/similarity");
 
-const categorizeProducts = (products) => {
-  const categories = new Map();
+function categorizeProducts(products) {
+  let categories = [];
 
   products.forEach((product) => {
-    const { category, title } = extractAttributes(product.title);
+    const normalizedTitle = normalizeText(product.title);
 
-    if (!categories.has(category)) {
-      categories.set(category, { category, count: 0, products: [] });
+    let matchedCategory = categories.find((cat) =>
+      similarity(normalizeText(cat.category), normalizedTitle)
+    );
+
+    if (!matchedCategory) {
+      matchedCategory = {
+        category: product.title,
+        count: 0,
+        products: [],
+      };
+      categories.push(matchedCategory);
     }
 
-    categories
-      .get(category)
-      .products.push({ title, supermarket: product.supermarket });
-    categories.get(category).count += 1;
+    matchedCategory.count++;
+    matchedCategory.products.push({
+      title: product.title,
+      supermarket: product.supermarket,
+    });
   });
 
-  return Array.from(categories.values());
-};
+  return categories;
+}
 
 module.exports = { categorizeProducts };
