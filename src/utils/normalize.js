@@ -1,10 +1,11 @@
-function normalizeText(text) {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // Remove acentos
-    .replace(/[^a-z0-9\s]/gi, "") // Remove caracteres especiais
-    .trim();
-}
+const removeAccents = (str) => {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+};
 
-module.exports = { normalizeText };
+const normalizeText = (text) => {
+  return removeAccents(text)
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "");
+};
+
+module.exports = { removeAccents, normalizeText };
